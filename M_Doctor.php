@@ -2,19 +2,10 @@
     require_once 'Connection.php';
     require_once 'M_Address.php';
     require_once 'M_JobType.php';
-    class Doctor
+    require_once 'M_Employee.php';
+    
+    class Doctor extends Employee
     {
-        public $ID;
-        public $Name;
-        public $PhoneNumber;
-        public $AddressID;
-        public $Address;
-        public $Birthdate;
-        public $ShiftTime;
-        public $JobTypeID;
-        public $JobType;
-        public $Salary;
-
         function __construct($ID)
         {
             $db = Database::getInstance();

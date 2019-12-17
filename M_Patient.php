@@ -3,24 +3,20 @@
     require_once 'M_Address.php';
     require_once 'M_JobType.php';
     require_once 'M_MedicalHistory.php';
+    require_once 'Person.php';
 
-    class Patient
+    class Patient extends Person
     {
-        public $ID;
-        public $Name;
-        public $PhoneNumber;
-        public $AddressID;
-        public $Address;
-        public $Birthdate;
+        public $Email;
         public $BloodType;
         public $HealthCareID;
         public $LocalID;
         public $MedicalDiagnosisID;
         public $MedicalDiagnosisObj;
 
-        function construct_id($ID)
+        function __construct($ID)
         {
-            $db = Database::GetConnection();
+            $db = Database::getInstance();
             if ($ID != "") 
             {
                 $sql = "SELECT * FROM `patients` WHERE PatID = $ID";
@@ -28,9 +24,11 @@
                 $PatientDataset = mysqli_query($connecntion, $sql) or die(mysqli_error());
                 if($row = mysqli_fetch_array($PatientDataset))
                 {
+                    $this->ID = $row['PatID'];
                     $this->Name = $row['Patname'];
+                    $this->Email = $row['PatEmail'];
                     $this->PhoneNumber = $row['Patphone'];
-                    $this->AddressID = $row['pataddressID'];
+                    $this->AddressID = $row['PataddressID'];
                     $Temp = new Address($row['PataddressID']);
                     $this->Address = $Temp->Address;
                     $this->Birthdate = $row['Patbirthdate'];
@@ -38,8 +36,8 @@
                     $this->HealthCareID = $row['PathealthcareID'];
                     $this->LocalID = $row['PatlocalID'];
                     $Temp = new MedicalHistory($row['PatmedicalhistoryID']);
-                    for ($i=0; $i < count($Temp); $i++) { 
-                        $this->MedicalDiagnosisObj[$i] = $Temp[$i];
+                    for ($i=0; $i < count($Temp->Diagnosis); $i++) { 
+                        $this->MedicalDiagnosisObj[$i] = $Temp->Diagnosis[$i];
                     }
                 }
             }
@@ -48,8 +46,8 @@
         public static function SelectAllPatients()
         {
             $db = Database::getInstance();
-            $connecntion = Database::GetConnection();
             $sql = "SELECT * FROM `patients` ORDER BY Patname";
+            $connecntion = Database::GetConnection();
             $PatientDataset = mysqli_query($connecntion, $sql) or die(mysql_error());
             $i = 0;
             $result;

@@ -2,23 +2,17 @@
     require_once 'Connection.php';
     require_once 'M_Address.php';
     require_once 'M_JobType.php';
+    require_once 'Person.php';
 
-    class Employee
+    class Employee extends Person
     {
-        public $ID;
-        public $Name;
-        public $PhoneNumber;
-        public $AddressID;
-        public $Address;
-        public $Birthdate;
         public $ShiftTime;
         public $JobTypeID;
         public $JobType;
         public $Salary;
 
-        function construct_id($ID)
+        function __construct($ID)
         {
-            //Database Connection place
             $db = Database::getInstance();
             if($ID != "")
             {
@@ -31,14 +25,14 @@
                     $this->Name = $row['Empname'];
                     $this->PhoneNumber = $row['Empphone'];
                     $this->AddressID = $row['EmpaddressID'];
-                    $Temp = new Address($row['EmpjobtypeID']);
+                    $Temp = new Address($this->AddressID);
                     $this->Address = $Temp->Address;
                     $this->Birthdate = $row['Empbirthdate'];
                     $this->ShiftTime = $row['Empshifttime'];
                     $this->JobTypeID = $row["EmpjobtypeID"];
                     $Temp2 = new JobType($row['EmpjobtypeID']);
                     $this->JobType = $Temp2->JobTypeName;
-                    $this->$Salary = $row['Empsalary'];
+                    $this->Salary = $row['Empsalary'];
                 }
             }
         }

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
     <head>
         <title>Dr.AmanyClinic</title>
-        <link rel="stylesheet" type="text/css" href="styleManager.css">
+        <link rel="stylesheet" type="text/css" href="styleReceptionist.css">
     </head>
     <body>
         <form action="" method="POST">
-            <table class = "ManagerTable">
+            <table class = "ReceptionistTable">
             <tr><th>Name</th><td><input type="text" name="name"></td></tr>
             <tr><th>Phone Number</th><td><input type="number" name="number"></td></tr>
             <tr><th>Address</th><td>
@@ -47,42 +47,41 @@
 <?php
 
     require_once 'Connection.php';
-    require_once 'M_Manager.php';
-    require_once 'V_Manager.php';
+    require_once 'M_Receptionist.php';
+    require_once 'V_Receptionist.php';
 
-    function AddManager($ManagerObject)
+    function AddReceptionist($ReceptionistObject)
     {
         $db = Database::getInstance();
         $connection = Database::GetConnection();
-        $sql = "INSERT INTO manager(Managername, Managerphone, ManageraddressID, Managerbirthdate, Managershifttime, ManagerjobtypeID, Managersalary) VALUES ('$ManagerObject->Name', '$ManagerObject->PhoneNumber', '$ManagerObject->AddressID', '$ManagerObject->Birthdate', '$ManagerObject->ShiftTime', '$ManagerObject->JobTypeID', '$ManagerObject->Salary')";
+        $sql = "INSERT INTO receptionists(Recname, Recphone, RecaddressID, Recbirthdate, Recshifttime, RecjobtypeID, Recsalary) VALUES ('$ReceptionistObject->Name', '$ReceptionistObject->PhoneNumber', '$ReceptionistObject->AddressID', '$ReceptionistObject->Birthdate', '$ReceptionistObject->ShiftTime', '$ReceptionistObject->JobTypeID', '$ReceptionistObject->Salary')";
         mysqli_query($connection, $sql) or die(mysqli_error($connection));
     }
 
-    function UpdateManager($ManagerObject)
+    function UpdateReceptionist($ReceptionistObject)
     {
         $db = Database::getInstance();
         $connection = Database::GetConnection();
-        $sql = "UPDATE manager SET Managername='$ManagerObject->Name', Managerphone='$ManagerObject->PhoneNumber', ManageraddressID='$ManagerObject->AddressID', Managerbirthdate='$ManagerObject->Birthdate', Managershifttime='$ManagerObject->ShiftTime', ManagerjobtypeID='$ManagerObject->JobTypeID', Managersalary='$ManagerObject->Salary'";
-        mysqli_query($connection, $sql) or die(mysqli_error($connection));
+        $sql = "UPDATE receptionists SET Recname='$ReceptionistObject->Name', Recphone='$ReceptionistObject->PhoneNumber',RecaddressID='$ReceptionistObject->AddressID', Recbirthdate='$ReceptionistObject->Birthdate', Recshifttime='$ReceptionistObject->ShiftTime',RecjobtypeID='$ReceptionistObject->JobTypeID', Recsalary='$ReceptionistObject->Salary'";
+        mysqli_query($connection, $sql);
     }
 
-    function DeleteManager($ID)
+    function DeleteReceptionist($ID)
     {
         $db = Database::getInstance();
         $connection = Database::GetConnection();
-        $sql = "DELETE FROM `manager` WHERE ManagerID = $ID";
+        $sql = "DELETE FROM `receptionists` WHERE RecID = $ID";
         mysqli_query($connection, $sql) or die(mysqli_error($connection));
     }
 
-    if (isset($_REQUEST['ManagerID'])) 
+    if (isset($_REQUEST['RecID'])) 
     {
-        $ManagerObject = new Manager($_REQUEST['ManagerID']);
-        $View = new ManagerView();
-        $View->ShowManagerDetails($ManagerObject);
+        $ReceptionistObject = new Receptionist($_REQUEST['RecID']);
+        $View = new ReceptionistView();
+        $View->ShowReceptionistDetails($ReceptionistObject);
 
-        if (isset($_POST['AddButton'])) 
-        {
-            $Model = new Manager("");
+        if (isset($_POST['AddButton'])) {
+            $Model = new Receptionist("");
             $Model->Name = $_POST['name'];
             $Model->PhoneNumber = $_POST['number'];
             $Model->AddressID = mysqli_real_escape_string(Database::GetConnection(), $_POST['address']);
@@ -90,31 +89,27 @@
             $Model->JobTypeID = mysqli_real_escape_string(Database::GetConnection(), $_POST['jobtype']);
             $Model->ShiftTime = $_POST['shifttime'];
             $Model->Salary = $_POST['salary'];
-            AddManager($Model);
+            AddReceptionist($Model);
             echo "Added Successfully";
         }
 
-        if (isset($_POST['UpdateButton'])) 
-        {
+        if (isset($_POST['UpdateButton'])) {
             if($_POST['name'] != "")
-            {$ManagerObject->Name = $_POST['name'];}
-            if($_POST['number'] != "")
-            {$ManagerObject->PhoneNumber = $_POST['number'];}
-            $ManagerObject->AddressID = mysqli_real_escape_string(Database::GetConnection(), $_POST['address']);
-            if($_POST['birthdate'] != "")
-            {$ManagerObject->Birthdate = $_POST['birthdate'];}
-            $ManagerObject->JobTypeID = mysqli_real_escape_string(Database::GetConnection(), $_POST['jobtype']);
-            if($_POST['shifttime'] != "")
-            {$ManagerObject->ShiftTime = $_POST['shifttime'];}
+            {$ReceptionistObject->Name = $_POST['name'];}
+            if($_POST['number'])
+            {$ReceptionistObject->PhoneNumber = $_POST['number'];}
+            $ReceptionistObject->AddressID = mysqli_real_escape_string(Database::GetConnection(), $_POST['address']);
+            if($_POST['birthdate'])
+            {-$ReceptionistObject->Birthdate = $_POST['birthdate'];}
+            $ReceptionistObject->JobTypeID = mysqli_real_escape_string(Database::GetConnection(), $_POST['jobtype']);
             if($_POST['salary'])
-            {$ManagerObject->Salary = $_POST['salary'];}
-            UpdateManager($ManagerObject);
+            {$ReceptionistObject->Salary = $_POST['salary'];}
+            UpdateReceptionist($ReceptionistObject);
             echo "Updated Successfully";
         }
 
-        if (isset($_POST['DeleteButton'])) 
-        {
-            DeleteManager($ManagerObject->ID);
+        if (isset($_POST['DeleteButton'])) {
+            DeleteReceptionist($ReceptionistObject->ID);
             echo "Deleted Successfully";
         }
     }

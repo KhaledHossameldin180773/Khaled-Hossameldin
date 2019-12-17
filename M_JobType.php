@@ -1,20 +1,19 @@
 <?php
-    //requiring database place and foreign key tables
     require_once 'Connection.php';
+
     class JobType
     {
         public $JobTypeID;
         public $JobTypeName;
 
-        function construct_id($ID)
+        function __construct($ID)
         {
-            //Database Connection place
             $db = Database::getInstance();
             if($ID != "")
             {
                 $sql = "SELECT * FROM `jobtype` WHERE JobtypeID = $ID";
                 $connection = Database::GetConnection();
-                $JobTypeDataset = mysqli_query($connection, $sql) or die(mysqli_error());
+                $JobTypeDataset = mysqli_query($connection, $sql) or die(mysqli_error($connection));
                 if($row = mysqli_fetch_array($JobTypeDataset))
                 {
                     $this->JobTypeID = $row['JobtypeID'];
@@ -25,9 +24,10 @@
 
         public Static function SelectAllJobTypes()
         {
+            $db = Database::getInstance();
             $connection = Database::GetConnection();
             $sql = "SELECT * FROM `jobtype` ORDER BY jobtypename";
-            $JobTypeDataset = mysqli_query($connection, $sql) or die(mysqli_error());
+            $JobTypeDataset = mysqli_query($connection, $sql) or die(mysqli_error($connection));
             $i = 0;
             $result;
             while($row = mysqli_fetch_array($JobTypeDataset))
